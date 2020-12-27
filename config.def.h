@@ -38,6 +38,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "discord",  	NULL,       NULL,       1 << 8,   	0,           -1 },
 	{ "Steam",  	NULL,       NULL,       1 << 7,   	0,           -1 },
+	{ "Brave-browser",  	NULL,       NULL,       1 << 1,   	0,           -1 },
 };
 
 /* layout(s) */
