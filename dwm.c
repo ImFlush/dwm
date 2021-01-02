@@ -438,10 +438,10 @@ void
 swallow(Client *p, Client *c)
 {
 
-	if (c->noswallow || c->isterminal)
-		return;
-	if (c->noswallow && !swallowfloating && c->isfloating)
-		return;
+//	if (c->noswallow || c->isterminal)
+//		return;
+//	if (c->noswallow && !swallowfloating && c->isfloating)
+//		return;
 
 	detach(c);
 	detachstack(c);
