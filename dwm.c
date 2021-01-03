@@ -1300,7 +1300,7 @@ resizeclient(Client *c, int x, int y, int w, int h)
 			wc.border_width = 0;
         } else if (n == 1) {
             gapoffset = gappx;
-			gapincrv = gapincrh = 2 * gappx;
+			gapincrv = gapincrh = 2 * (gappx - borderpx);
             wc.border_width = 0;
 		} else {
 		    if (c->mon->lt[c->mon->sellt]->arrange == tile && ismaster(c) && selmon->nmaster < n) {
