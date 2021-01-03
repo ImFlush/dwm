@@ -234,6 +234,7 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static int ismaster(Client *c);
 
 /* variables */
 static const char broken[] = "broken";
@@ -1279,7 +1280,8 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	XWindowChanges wc;
 	unsigned int n;
 	unsigned int gapoffset;
-	unsigned int gapincr;
+	unsigned int gapincrv;
+	unsigned int gapincrh;
 	Client *nbc;
 
 	wc.border_width = c->bw;
@@ -1289,27 +1291,33 @@ resizeclient(Client *c, int x, int y, int w, int h)
 
 	/* Do nothing if layout is floating */
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
-		gapincr = gapoffset = 0;
+		gapincrv = gapincrh = gapoffset = 0;
 	} else {
 		/* Remove border and gap if layout is monocle*/
 		if (c->mon->lt[c->mon->sellt]->arrange == monocle) {
 			gapoffset = 0;
-			gapincr = -2 * borderpx;
+			gapincrv = gapincrh = -2 * borderpx;
 			wc.border_width = 0;
         } else if (n == 1) {
             gapoffset = gappx;
-            gapincr = 2 * gappx;
+			gapincrv = gapincrh = 2 * gappx;
             wc.border_width = 0;
 		} else {
-			gapoffset = gappx;
-			gapincr = 2 * gappx;
+		    if (c->mon->lt[c->mon->sellt]->arrange == tile && ismaster(c) && selmon->nmaster < n) {
+				gapoffset = gappx;
+				gapincrh = gappx;
+				gapincrv = 2 * gappx;
+			} else {
+				gapoffset = gappx;
+				gapincrv = gapincrh = 2 * gappx;
+			}
 		}
 	}
 
 	c->oldx = c->x; c->x = wc.x = x + gapoffset;
 	c->oldy = c->y; c->y = wc.y = y + gapoffset;
-	c->oldw = c->w; c->w = wc.width = w - gapincr;
-	c->oldh = c->h; c->h = wc.height = h - gapincr;
+	c->oldw = c->w; c->w = wc.width = w - gapincrh;
+	c->oldh = c->h; c->h = wc.height = h - gapincrv;
 
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
@@ -2178,3 +2186,27 @@ main(int argc, char *argv[])
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
 }
+
+int
+ismaster(Client *c)
+{
+	if (selmon->nmaster < 1)
+		return 0;
+
+	Client *m;
+	m = nexttiled(selmon->clients);
+
+	if (c == m)
+		return 1;
+	else if (selmon->nmaster > 1) {
+		int i = 1;
+		for (; m && i <= selmon->nmaster; m = m->next) {
+				i++;
+				if (c == m)
+				   return 1;
+		}
+     }
+
+	return 0;
+}
+
