@@ -16,9 +16,10 @@ static const char col_cyan[]        = "#005577";
 static const char col_font[]        = "#f5f5dc";
 static const char col_focused[]     = "#ff34b3";
 static const char col_unfocused[]   = "#b03060";
+static const char col_background[]  = "#050307";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_font, col_unfocused, col_unfocused},
+	[SchemeNorm] = { col_font, col_unfocused, col_background},
 	[SchemeSel]  = { col_font, col_focused,  col_font},
 	[SchemeStatus]  = { col_font, col_unfocused,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_font, col_focused,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
