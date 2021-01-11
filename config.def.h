@@ -15,6 +15,7 @@ static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
 static const char col_font[]        = "#f5f5dc";
 static const char col_focused[]     = "#ff34b3";
+static const char col_invfocused[]  = "#50162C";
 static const char col_unfocused[]   = "#b03060";
 static const char col_background[]  = "#050307";
 static const char *colors[][3]      = {
@@ -26,6 +27,7 @@ static const char *colors[][3]      = {
     [SchemeTagsNorm]  = { col_font, col_unfocused,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
     [SchemeInfoSel]  = { col_font, col_unfocused,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
     [SchemeInfoNorm]  = { col_font, col_unfocused,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+    [SchemeInv]  = { col_font, col_invfocused, col_font}
 };
 
 /* tagging */
