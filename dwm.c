@@ -235,6 +235,9 @@ static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 
+static void keeptagmon(const Arg *arg);
+static void keeptagsendmon(Client *c, Monitor *m);
+
 /* variables */
 static const char broken[] = "broken";
 static char stext[256];
@@ -2149,4 +2152,27 @@ main(int argc, char *argv[])
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
+}
+
+void
+keeptagmon(const Arg *arg)
+{
+	if (!selmon->sel || !mons->next)
+		return;
+	keeptagsendmon(selmon->sel, dirtomon(arg->i));
+}
+
+void
+keeptagsendmon(Client *c, Monitor *m)
+{
+	if (c->mon == m)
+		return;
+	unfocus(c, 1);
+	detach(c);
+	detachstack(c);
+	c->mon = m;
+	attach(c);
+	attachstack(c);
+	focus(NULL);
+	arrange(NULL);
 }
