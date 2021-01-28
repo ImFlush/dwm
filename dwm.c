@@ -240,6 +240,8 @@ static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
 
 static void focusmaster(const Arg *arg);
+static void keeptagmon(const Arg *arg);
+static void keeptagsendmon(Client *c, Monitor *m);
 
 /* variables */
 static const char broken[] = "broken";
@@ -2191,4 +2193,27 @@ focusmaster(const Arg *arg)
 
 	if (c)
 		focus(c);
+}
+
+keeptagmon(const Arg *arg)
+{
+	if (!selmon->sel || !mons->next)
+		return;
+	keeptagsendmon(selmon->sel, dirtomon(arg->i));
+}
+
+void
+keeptagsendmon(Client *c, Monitor *m)
+{
+	if (c->mon == m)
+		return;
+	unfocus(c, 1);
+	detach(c);
+	detachstack(c);
+	c->mon = m;
+	attach(c);
+	attachstack(c);
+	focus(NULL);
+	arrange(NULL);
+>>>>>>> keeptagmon
 }
