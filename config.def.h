@@ -31,7 +31,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "󰆍", "", "3", "4", "5", "", "󰔁", "󰙯", "󰓓" };
+static const char *tags[] = { "󰆍", "", "󰨞", "4", "5", "", "󰔁", "󰙯", "󰓓" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -44,9 +44,10 @@ static const Rule rules[] = {
 	{ "discord",  			NULL,     NULL,       	  1 << 7,    0,          0,			  0,	    -1 },
 	{ "Steam",  			NULL,     NULL,       	  1 << 8,    0,          0, 		  0,   		-1 },
 	{ "Signal",    			NULL,     NULL,           1 << 5,    0,          0,           0,        -1 },
+	{ "code-oss",   		NULL,     NULL,           1 << 2,    0,          0,           0,        -1 },
 
 	{ "St",      			NULL,     NULL,           0,         0,          0,           0,        -1 },
-	{ NULL,      			NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	{ NULL,      			NULL,     "Event Tester", 0,         0,          0,           1,        -1 } /* xev */
 };
 
 /* layout(s) */
