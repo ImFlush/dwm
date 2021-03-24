@@ -2813,6 +2813,7 @@ focusmaster(const Arg *arg)
 	if (c)
 		focus(c);
 }
+
 keeptagmon(const Arg *arg)
 {
 	if (!selmon->sel || !mons->next)
