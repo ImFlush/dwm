@@ -3,22 +3,21 @@
 /* appearance */
 static unsigned int borderpx  		= 3;        /* border pixel of windows */
 static unsigned int gappx     		= 10;       /* gaps between windows */
-static const unsigned int snap      = 32;       /* snap pixel */
-static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "SFMono-Regular:size=15" };
-static const char dmenufont[]       = "SFMono-Regular:size=15";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char col_font[]        = "#f5f5dc";
-static const char col_focused[]     = "#ff34b3";
-static const char col_invfocused[]  = "#50162C";
-static const char col_unfocused[]   = "#b03060";
-static const char col_background[]  = "#050307";
-static const char *colors[][3]      = {
+static unsigned int snap     		= 32;       /* snap pixel */
+static int swallowfloating   		= 0;        /* 1 means swallow floating windows by default */
+static int showbar           	 	= 1;        /* 0 means no bar */
+static int topbar            	 	= 1;        /* 0 means bottom bar */
+static char *fonts[]         	 	= { "SFMono-Regular:size=15" };
+static char dmenufont[]      	 	= "SFMono-Regular:size=15";
+static char dmenu_font[]       		= "#f5f5dc";
+static char dmenu_focused[]    		= "#ff34b3";
+static char dmenu_background[]      = "#000000";
+static char col_font[]        		= "#f5f5dc";
+static char col_focused[]     		= "#ff34b3";
+static char col_invfocused[]  		= "#50162C";
+static char col_unfocused[]   		= "#b03060";
+static char col_background[]  		= "#050307";
+static char *colors[][3]      		= {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_font, col_unfocused, col_background},
 	[SchemeSel]  = { col_font, col_focused,  col_font},
@@ -76,16 +75,29 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", dmenu_background, "-nf", dmenu_font, "-sb", dmenu_focused, "-sf", dmenu_font, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /*
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
-		{ "normbgcolor",        STRING,  "" },
 		{ "borderpx",          	INTEGER, &borderpx },
 		{ "gappx",          	INTEGER, &gappx },
+		{ "snap",          		INTEGER, &snap },
+		{ "swallowfloating",   	INTEGER, &swallowfloating },
+		{ "showbar",          	INTEGER, &showbar },
+		{ "topbar",          	INTEGER, &topbar },
+		//{ "fonts",     		STRING,  &fonts },
+		{ "dmenufont",     		STRING,  &dmenufont },
+		{ "col_font",        	STRING,  &col_font },
+		{ "col_focused",        STRING,  &col_focused },
+		{ "col_invfocused",     STRING,  &col_invfocused },
+		{ "col_unfocused",     	STRING,  &col_unfocused },
+		{ "col_background",     STRING,  &col_background },
+		{ "dmenu_font",        	STRING,  &dmenu_font },
+		{ "dmenu_focused",      STRING,  &dmenu_focused },
+		{ "dmenu_background",	STRING,  &dmenu_background },
 };
 
 static Key keys[] = {
