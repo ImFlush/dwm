@@ -18,15 +18,15 @@ static char col_invfocused[]  		= "#50162C";
 static char col_unfocused[]   		= "#b03060";
 static char col_background[]  		= "#050307";
 static char *colors[][3]      		= {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_font, col_unfocused, col_background},
-	[SchemeSel]  = { col_font, col_focused,  col_font},
+	/*               		fg         bg         border   */
+	[SchemeNorm] 	= { col_font, col_unfocused, col_background},
+	[SchemeSel]  	= { col_font, col_focused,  col_font},		
 	[SchemeStatus]  = { col_font, col_unfocused,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
-	[SchemeTagsSel]  = { col_font, col_focused,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
-    [SchemeTagsNorm]  = { col_font, col_unfocused,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
-    [SchemeInfoSel]  = { col_font, col_unfocused,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
-    [SchemeInfoNorm]  = { col_font, col_unfocused,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
-    [SchemeInv]  = { col_font, col_invfocused, col_font}
+	[SchemeTagsSel] = { col_font, col_focused,  "#000000"  }, 	// Tagbar left selected {text,background,not used but cannot be empty}
+    [SchemeTagsNorm]= { col_font, col_unfocused,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+    [SchemeInfoSel] = { col_font, col_unfocused,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
+    [SchemeInfoNorm]= { col_font, col_unfocused,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+    [SchemeInv]  	= { col_font, col_invfocused, col_font}		// tagbar on second monitor
 };
 
 /* tagging */
