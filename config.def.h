@@ -8,10 +8,6 @@ static int swallowfloating   		= 0;        /* 1 means swallow floating windows b
 static int showbar           	 	= 1;        /* 0 means no bar */
 static int topbar            	 	= 1;        /* 0 means bottom bar */
 static char *fonts[]         	 	= { "SFMono-Regular:size=15" };
-static char dmenufont[]      	 	= "SFMono-Regular:size=15";
-static char dmenu_font[]       		= "#f5f5dc";
-static char dmenu_focused[]    		= "#ff34b3";
-static char dmenu_background[]      = "#000000";
 static char col_font[]        		= "#f5f5dc";
 static char col_focused[]     		= "#ff34b3";
 static char col_invfocused[]  		= "#50162C";
@@ -75,8 +71,6 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", dmenu_background, "-nf", dmenu_font, "-sb", dmenu_focused, "-sf", dmenu_font, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /*
@@ -90,20 +84,15 @@ ResourcePref resources[] = {
 		{ "showbar",          	INTEGER, &showbar },
 		{ "topbar",          	INTEGER, &topbar },
 		//{ "fonts",     		STRING,  &fonts },
-		{ "dmenufont",     		STRING,  &dmenufont },
 		{ "col_font",        	STRING,  &col_font },
 		{ "col_focused",        STRING,  &col_focused },
 		{ "col_invfocused",     STRING,  &col_invfocused },
 		{ "col_unfocused",     	STRING,  &col_unfocused },
 		{ "col_background",     STRING,  &col_background },
-		{ "dmenu_font",        	STRING,  &dmenu_font },
-		{ "dmenu_focused",      STRING,  &dmenu_focused },
-		{ "dmenu_background",	STRING,  &dmenu_background },
 };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ControlMask,      		XK_Return, spawnsshaware,  {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
