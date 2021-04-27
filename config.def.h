@@ -1,28 +1,45 @@
 /* See LICENSE file for copyright and license details. */
 
-/* appearance */
-static unsigned int borderpx  		= 3;        /* border pixel of windows */
-static unsigned int gappx     		= 10;       /* gaps between windows */
-static unsigned int snap     		= 32;       /* snap pixel */
-static int swallowfloating   		= 0;        /* 1 means swallow floating windows by default */
-static int showbar           	 	= 1;        /* 0 means no bar */
-static int topbar            	 	= 1;        /* 0 means bottom bar */
-static char *fonts[]         	 	= { "SFMono-Regular:size=15" };
-static char col_font[]        		= "#f5f5dc";
-static char col_focused[]     		= "#ff34b3";
-static char col_invfocused[]  		= "#50162C";
-static char col_unfocused[]   		= "#b03060";
-static char col_background[]  		= "#050307";
-static char *colors[][3]      		= {
-	/*               		fg         bg         border   */
-	[SchemeNorm] 	= { col_font, col_unfocused, col_background},
-	[SchemeSel]  	= { col_font, col_focused,  col_font},		
-	[SchemeStatus]  = { col_font, col_unfocused,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
-	[SchemeTagsSel] = { col_unfocused, col_focused,  "#000000"  }, 	// Tagbar left selected {text,background,not used but cannot be empty}
-    [SchemeTagsNorm]= { col_font, col_unfocused,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
-    [SchemeInfoSel] = { col_font, col_unfocused,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
-    [SchemeInfoNorm]= { col_font, col_unfocused,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
-    [SchemeInv]  	= { col_font, col_invfocused, col_font}		// tagbar on second monitor
+static unsigned int borderpx  = 1;        /* border pixel of windows */
+static unsigned int gappx     = 10;       /* gaps between windows */
+static unsigned int snap      = 32;       /* snap pixel */
+static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
+static int showbar            = 1;        /* 0 means no bar */
+static int topbar             = 1;        /* 0 means bottom bar */
+static char font[]            = "monospace:size=10";
+static char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { font };
+static char normbgcolor[]           = "#222222";
+static char normbordercolor[]       = "#444444";
+static char normfgcolor[]           = "#bbbbbb";
+static char selfgcolor[]            = "#eeeeee";
+static char selbordercolor[]        = "#005577";
+static char selbgcolor[]            = "#005577";
+
+static char statusfgcolor[]			= "#ffffff";
+static char statusbgcolor[]			= "#000000";
+static char tagSelfgcolor[]			= "#ffffff";
+static char tagSelbgcolor[]			= "#000000";
+static char tagNormfgcolor[]		= "#ffffff";
+static char tagNormbgcolor[]		= "#000000";
+static char infoSelfgcolor[]		= "#ffffff";
+static char infoSelbgcolor[]		= "#000000";
+static char infoNormfgcolor[]		= "#ffffff";
+static char infoNormbgcolor[]		= "#000000";
+static char invfgcolor[]			= "#ffffff";
+static char invbgcolor[]			= "#000000";
+static char invbordercolor[]		= "#787878";
+static char *colors[][3] = {
+		/*               fg           bg           border   */
+		[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+
+		[SchemeStatus]  = { statusfgcolor, statusbgcolor,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
+		[SchemeTagsSel] = { tagSelfgcolor, tagSelbgcolor,  "#000000"  }, 	// Tagbar left selected {text,background,not used but cannot be empty}
+	    [SchemeTagsNorm]= { tagNormfgcolor, tagNormbgcolor,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+	    [SchemeInfoSel] = { infoSelfgcolor, infoSelbgcolor,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
+	    [SchemeInfoNorm]= { infoSelfgcolor, infoSelbgcolor,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+	    [SchemeInv]  	= { invfgcolor, invbgcolor, invbordercolor}		// tagbar selected on second monitor
 };
 
 /* tagging */
@@ -48,9 +65,9 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.5; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static int nmaster     = 1;    /* number of clients in master area */
+static int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -71,24 +88,45 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 /*
  * Xresources preferences to load at startup
  */
 ResourcePref resources[] = {
+		{ "font",               STRING,  &font },
+		{ "dmenufont",          STRING,  &dmenufont },
+		{ "normbgcolor",        STRING,  &normbgcolor },
+		{ "normbordercolor",    STRING,  &normbordercolor },
+		{ "normfgcolor",        STRING,  &normfgcolor },
+		{ "selbgcolor",         STRING,  &selbgcolor },
+		{ "selbordercolor",     STRING,  &selbordercolor },
+		{ "selfgcolor",         STRING,  &selfgcolor },
 		{ "borderpx",          	INTEGER, &borderpx },
-		{ "gappx",          	INTEGER, &gappx },
 		{ "snap",          		INTEGER, &snap },
-		{ "swallowfloating",   	INTEGER, &swallowfloating },
 		{ "showbar",          	INTEGER, &showbar },
 		{ "topbar",          	INTEGER, &topbar },
-		//{ "fonts",     		STRING,  &fonts },
-		{ "col_font",        	STRING,  &col_font },
-		{ "col_focused",        STRING,  &col_focused },
-		{ "col_invfocused",     STRING,  &col_invfocused },
-		{ "col_unfocused",     	STRING,  &col_unfocused },
-		{ "col_background",     STRING,  &col_background },
+		{ "nmaster",          	INTEGER, &nmaster },
+		{ "resizehints",       	INTEGER, &resizehints },
+		{ "mfact",      	 	FLOAT,   &mfact },
+
+		{ "gappx",          	INTEGER, &gappx },
+		{ "swallowfloating",   	INTEGER, &swallowfloating },
+		{ "statusfgcolor",        STRING,  &statusfgcolor },
+		{ "statusbgcolor",        STRING,  &statusbgcolor },
+		{ "tagSelfgcolor",        STRING,  &tagSelfgcolor },
+		{ "tagSelbgcolor",        STRING,  &tagSelbgcolor },
+		{ "tagNormfgcolor",        STRING,  &tagNormfgcolor },
+		{ "tagNormbgcolor",        STRING,  &tagNormbgcolor },
+		{ "infoSelfgcolor",        STRING,  &infoSelfgcolor },
+		{ "infoSelbgcolor",        STRING,  &infoSelbgcolor },
+		{ "infoNormfgcolor",        STRING,  &infoNormfgcolor },
+		{ "infoNormbgcolor",        STRING,  &infoNormbgcolor },
+		{ "invfgcolor   ",        STRING,  &invfgcolor  r },
+		{ "invbgcolor   ",        STRING,  &invbgcolor  r },
+		{ "invbordercolor",        STRING,  &invbordercolor },
 };
 
 static Key keys[] = {
@@ -108,9 +146,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,             			XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-//	{ MODKEY,                       XK_minus,  setgaps,        {.i = -1 } },
-//	{ MODKEY,                       XK_equal,  setgaps,        {.i = +1 } },
-//	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
