@@ -1,8 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
-/* appearance */
 static unsigned int borderpx  = 1;        /* border pixel of windows */
+static unsigned int gappx     = 10;       /* gaps between windows */
 static unsigned int snap      = 32;       /* snap pixel */
+static int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
 static char font[]            = "monospace:size=10";
@@ -14,25 +15,53 @@ static char normfgcolor[]           = "#bbbbbb";
 static char selfgcolor[]            = "#eeeeee";
 static char selbordercolor[]        = "#005577";
 static char selbgcolor[]            = "#005577";
+
+static char statusfgcolor[]			= "#ffffff";
+static char statusbgcolor[]			= "#000000";
+static char tagSelfgcolor[]			= "#ffffff";
+static char tagSelbgcolor[]			= "#000000";
+static char tagNormfgcolor[]		= "#ffffff";
+static char tagNormbgcolor[]		= "#000000";
+static char infoSelfgcolor[]		= "#ffffff";
+static char infoSelbgcolor[]		= "#000000";
+static char infoNormfgcolor[]		= "#ffffff";
+static char infoNormbgcolor[]		= "#000000";
+static char invfgcolor[]			= "#ffffff";
+static char invbgcolor[]			= "#000000";
+static char invbordercolor[]		= "#787878";
 static char *colors[][3] = {
-       /*               fg           bg           border   */
-       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
-       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+		/*               fg           bg           border   */
+		[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       	[SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
+
+		[SchemeStatus]  = { statusfgcolor, statusbgcolor,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
+		[SchemeTagsSel] = { tagSelfgcolor, tagSelbgcolor,  "#000000"  }, 	// Tagbar left selected {text,background,not used but cannot be empty}
+	    [SchemeTagsNorm]= { tagNormfgcolor, tagNormbgcolor,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+	    [SchemeInfoSel] = { infoSelfgcolor, infoSelbgcolor,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
+	    [SchemeInfoNorm]= { infoSelfgcolor, infoSelbgcolor,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+	    [SchemeInv]  	= { invfgcolor, invbgcolor, invbordercolor}		// tagbar selected on second monitor
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "󰞷", "", "", "󰨞", "󰓇", "", "󰔁", "󰙯", "󰓓" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
-	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
-	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	// class     			instance  title           tags mask  isfloating  isterminal  noswallow  monitor
+	{ "Brave-browser",  	NULL,     NULL,       	  1 << 1,  	 0,          0, 		  0, 		-1 },
+	{ "code-oss",   		NULL,     NULL,           1 << 3,    0,          0,           0,        -1 },
+	{ "Spotify",   			NULL,     NULL,           1 << 4,    0,          0,           0,        -1 },
+	{ "Signal",    			NULL,     NULL,           1 << 5,    0,          0,           0,        -1 },
+	{ "Whatsapp-for-linux", NULL,     NULL,           1 << 5,    0,          0,           0,        -1 },
+	{ "TelegramDesktop",    NULL,     NULL,           1 << 6,    0,          0,           0,        -1 },
+	{ "discord",  			NULL,     NULL,       	  1 << 7,    0,          0,			  0,	    -1 },
+	{ "Steam",  			NULL,     NULL,       	  1 << 8,    0,          0, 		  0,   		-1 },
+
+	{ "St",      			NULL,     NULL,           0,         0,          0,           0,        -1 },
+	{ NULL,      			NULL,     "Event Tester", 0,         0,          0,           1,        -1 } /* xev */
 };
 
 /* layout(s) */
@@ -50,7 +79,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -84,25 +113,40 @@ ResourcePref resources[] = {
 		{ "nmaster",          	INTEGER, &nmaster },
 		{ "resizehints",       	INTEGER, &resizehints },
 		{ "mfact",      	 	FLOAT,   &mfact },
+
+		{ "gappx",          	INTEGER, &gappx },
+		{ "swallowfloating",   	INTEGER, &swallowfloating },
+		{ "statusfgcolor",        STRING,  &statusfgcolor },
+		{ "statusbgcolor",        STRING,  &statusbgcolor },
+		{ "tagSelfgcolor",        STRING,  &tagSelfgcolor },
+		{ "tagSelbgcolor",        STRING,  &tagSelbgcolor },
+		{ "tagNormfgcolor",        STRING,  &tagNormfgcolor },
+		{ "tagNormbgcolor",        STRING,  &tagNormbgcolor },
+		{ "infoSelfgcolor",        STRING,  &infoSelfgcolor },
+		{ "infoSelbgcolor",        STRING,  &infoSelbgcolor },
+		{ "infoNormfgcolor",        STRING,  &infoNormfgcolor },
+		{ "infoNormbgcolor",        STRING,  &infoNormbgcolor },
+		{ "invfgcolor   ",        STRING,  &invfgcolor  r },
+		{ "invbgcolor   ",        STRING,  &invbgcolor  r },
+		{ "invbordercolor",        STRING,  &invbordercolor },
 };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,       	XK_Return, spawnsshaware,  {.v = termcmd } },
+	{ MODKEY|ControlMask,      		XK_Return, spawnsshaware,  {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_o,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ControlMask,           XK_j,      setcfact,       {.f = +0.25} },
 	{ MODKEY|ControlMask,           XK_k,      setcfact,       {.f = -0.25} },
 	{ MODKEY,             			XK_r,      setcfact,       {.f =  0.00} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+	{ MODKEY,             			XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
@@ -116,10 +160,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ControlMask,           XK_comma,  keeptagmon,     {.i = -1 } },
+    { MODKEY|ControlMask,           XK_comma,  keeptagmon,     {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, keeptagmon,     {.i = +1 } },
-	{ MODKEY|ShiftMask,           XK_j,      pushdown,       {0} },
-	{ MODKEY|ShiftMask,           XK_k,      pushup,         {0} },
+	{ MODKEY|ShiftMask,           	XK_j,      pushdown,       {0} },
+	{ MODKEY|ShiftMask,           	XK_k,      pushup,         {0} },
+	{ MODKEY|ControlMask,           XK_space,  focusmaster,    {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
